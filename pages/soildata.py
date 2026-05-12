@@ -31,6 +31,33 @@ for sensor in sensors:
 
 
 
+
+# VIEW SOIL DATA
+
+st.subheader("Soil Data Records")
+
+if st.button("View Soil Data"):
+
+    view_query = """
+    SELECT SoilData.soil_data_id, Sensor.sensor_type, SoilData.moisture_level, SoilData.temperature, SoilData.ph_level, SoilData.recorded_time
+    FROM SoilData
+    JOIN Sensor
+    ON SoilData.sensor_id = Sensor.sensor_id
+    """
+
+    cursor.execute(view_query)
+
+    result = cursor.fetchall()
+
+    df = pd.DataFrame(
+        result,
+        columns=[ "Soil Data ID", "Sensor Type", "Moisture", "Temperature", "pH Level", "Recorded Time" ] )
+
+    st.dataframe(df)
+
+
+
+
 # ADD SOIL DATA
 
 st.subheader("Add Soil Data")
@@ -76,30 +103,6 @@ if st.button("Add Soil Data"):
 
     st.success("Soil Data Added Successfully")
 
-
-
-# VIEW SOIL DATA
-
-st.subheader("Soil Data Records")
-
-if st.button("View Soil Data"):
-
-    view_query = """
-    SELECT SoilData.soil_data_id, Sensor.sensor_type, SoilData.moisture_level, SoilData.temperature, SoilData.ph_level, SoilData.recorded_time
-    FROM SoilData
-    JOIN Sensor
-    ON SoilData.sensor_id = Sensor.sensor_id
-    """
-
-    cursor.execute(view_query)
-
-    result = cursor.fetchall()
-
-    df = pd.DataFrame(
-        result,
-        columns=[ "Soil Data ID", "Sensor Type", "Moisture", "Temperature", "pH Level", "Recorded Time" ] )
-
-    st.dataframe(df)
 
 
 
