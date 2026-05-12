@@ -7,6 +7,21 @@ conn = create_connection()
 cursor = conn.cursor()
 
 
+# Fetch Farmers from database
+query = "SELECT farmer_id, farmer_name FROM Farmer"
+
+cursor.execute(query)
+
+farmers = cursor.fetchall() # It will return list of tuples : [(1, 'Ali'), (2, 'Ahmed')]
+
+# Create DropDow option
+farmer_options = {}
+
+for farmer in farmers:
+    farmer_options[farmer[1]] = farmer[0]
+
+
+
 # --- VIEW FARMs WITH FARMER NAMES ---
 st.subheader("Farm Records")
 
@@ -34,19 +49,6 @@ if st.button("View Farms"):
 
     st.dataframe(df)
 
-
-# Fetch Farmers from database
-query = "SELECT farmer_id, farmer_name FROM Farmer"
-
-cursor.execute(query)
-
-farmers = cursor.fetchall() # It will return list of tuples : [(1, 'Ali'), (2, 'Ahmed')]
-
-# Create DropDow option
-farmer_options = {}
-
-for farmer in farmers:
-    farmer_options[farmer[1]] = farmer[0]
 
 
 # ----- Add Farm Form -----
