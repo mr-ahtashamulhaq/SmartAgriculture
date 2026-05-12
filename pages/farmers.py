@@ -2,10 +2,29 @@ import streamlit as st
 from db import create_connection
 import pandas as pd
 
-st.title("Farmers Management")
-
 conn = create_connection() # Create mySQL connection
 cursor = conn.cursor() #cursor execute queries
+st.title("Farmers Management")
+
+
+
+st.subheader("Farmer Records")
+
+if st.button("Farmer Records"):
+    query = "SELECT * FROM Farmer"
+
+    cursor.execute(query)
+
+    result = cursor.fetchall()  # get all rows from query result
+
+
+    df = pd.DataFrame(
+        result,
+        columns=["ID", "Name", "Email", "Phone", "Address"] )
+
+    st.dataframe(df)
+
+# ------
 
 
 st.subheader("Add New Farmer")
@@ -31,23 +50,6 @@ if st.button("Add Farmer"): # runs code only when clicked.
     conn.commit()   #save changes permanently
 
     st.success("Farmer Added Successfully")
-
-
-st.subheader("Farmer Records")
-
-if st.button("Farmer Records"):
-    query = "SELECT * FROM Farmer"
-
-    cursor.execute(query)
-
-    result = cursor.fetchall()  # get all rows from query result
-
-
-    df = pd.DataFrame(
-        result,
-        columns=["ID", "Name", "Email", "Phone", "Address"] )
-
-    st.dataframe(df)
 
 
 #----
