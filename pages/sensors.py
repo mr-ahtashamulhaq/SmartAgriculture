@@ -37,6 +37,33 @@ sensor_status =  ["Active", "Inactive", "Maintenance"]
 
 
 
+# VIEW SENSORS
+
+st.subheader("Sensor Records")
+
+if st.button("View Sensors"):
+
+    view_query = """
+    SELECT Sensor.sensor_id, Field.field_name, Sensor.sensor_type, Sensor.installation_date, Sensor.current_status
+    FROM Sensor
+    JOIN Field
+    ON Sensor.field_id = Field.field_id
+    """
+
+    cursor.execute(view_query)
+
+    result = cursor.fetchall()
+
+    df = pd.DataFrame(
+        result,
+        columns=[ "Sensor ID", "Field Name", "Sensor Type", "Installation Date", "Current Status" ]
+    )
+
+    st.dataframe(df)
+
+
+
+
 # ADD SENSOR
 
 st.subheader("Add New Sensor")
@@ -77,32 +104,6 @@ if st.button("Add Sensor"):
     conn.commit()
 
     st.success("Sensor Added Successfully")
-
-
-
-# VIEW SENSORS
-
-st.subheader("Sensor Records")
-
-if st.button("View Sensors"):
-
-    view_query = """
-    SELECT Sensor.sensor_id, Field.field_name, Sensor.sensor_type, Sensor.installation_date, Sensor.current_status
-    FROM Sensor
-    JOIN Field
-    ON Sensor.field_id = Field.field_id
-    """
-
-    cursor.execute(view_query)
-
-    result = cursor.fetchall()
-
-    df = pd.DataFrame(
-        result,
-        columns=[ "Sensor ID", "Field Name", "Sensor Type", "Installation Date", "Current Status" ]
-    )
-
-    st.dataframe(df)
 
 
 
