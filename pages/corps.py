@@ -29,6 +29,33 @@ for field in fields:
 
 
 
+# VIEW CROPS
+
+st.subheader("Crop Records")
+
+if st.button("View Crops"):
+
+    view_query = """
+    SELECT Crop.crop_id, Field.field_name, Crop.crop_name, Crop.planting_date, Crop.expected_harvest_date
+    FROM Crop
+    JOIN Field
+    ON Crop.field_id = Field.field_id
+    """
+
+    cursor.execute(view_query)
+
+    result = cursor.fetchall()
+
+    df = pd.DataFrame(
+        result,
+        columns=[ "Crop ID", "Field Name", "Crop Name", "Planting Date", "Expected Harvest" ]
+    )
+
+    st.dataframe(df)
+
+
+
+
 # ADD CROP
 
 st.subheader("Add New Crop")
@@ -66,32 +93,6 @@ if st.button("Add Crop"):
     conn.commit()
 
     st.success("Crop Added Successfully")
-
-
-
-# VIEW CROPS
-
-st.subheader("Crop Records")
-
-if st.button("View Crops"):
-
-    view_query = """
-    SELECT Crop.crop_id, Field.field_name, Crop.crop_name, Crop.planting_date, Crop.expected_harvest_date
-    FROM Crop
-    JOIN Field
-    ON Crop.field_id = Field.field_id
-    """
-
-    cursor.execute(view_query)
-
-    result = cursor.fetchall()
-
-    df = pd.DataFrame(
-        result,
-        columns=[ "Crop ID", "Field Name", "Crop Name", "Planting Date", "Expected Harvest" ]
-    )
-
-    st.dataframe(df)
 
 
 
