@@ -23,6 +23,29 @@ for farm in farms:
     farm_options[farm[1]] = farm[0]
 
 
+
+# --- VIEW Fields ---
+st.subheader("Field Records")
+
+if st.button("View Fields"):
+
+    view_query = """
+    SELECT Field.field_id, Farm.farm_name, Field.field_name, Field.soil_type, Field.field_area
+    FROM Field
+    JOIN Farm
+    ON Field.farm_id = Farm.farm_id
+    """
+
+    cursor.execute(view_query)
+
+    result = cursor.fetchall()
+
+    df = pd.DataFrame( result, columns=[ "Field ID", "Farm Name", "Field Name", "Soil Type", "Field Area" ] )
+
+    st.dataframe(df)
+
+
+
 # --- ADD Field ---
 st.subheader("Add New Field")
 
@@ -62,26 +85,6 @@ if st.button("Add Field"):
 
     st.success("Field Added Successfully")
 
-
-# --- VIEW Fields ---
-st.subheader("Field Records")
-
-if st.button("View Fields"):
-
-    view_query = """
-    SELECT Field.field_id, Farm.farm_name, Field.field_name, Field.soil_type, Field.field_area
-    FROM Field
-    JOIN Farm
-    ON Field.farm_id = Farm.farm_id
-    """
-
-    cursor.execute(view_query)
-
-    result = cursor.fetchall()
-
-    df = pd.DataFrame( result, columns=[ "Field ID", "Farm Name", "Field Name", "Soil Type", "Field Area" ] )
-
-    st.dataframe(df)
 
 
 # ---DELETE Field ---
