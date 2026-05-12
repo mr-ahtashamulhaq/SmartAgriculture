@@ -7,7 +7,7 @@ cursor = conn.cursor() #cursor execute queries
 st.title("Farmers Management")
 
 
-
+# VIEW
 st.subheader("Farmer Records")
 
 if st.button("Farmer Records"):
@@ -24,8 +24,9 @@ if st.button("Farmer Records"):
 
     st.dataframe(df)
 
-# ------
 
+
+# ---ADD NEW FARMER
 
 st.subheader("Add New Farmer")
 
@@ -52,7 +53,8 @@ if st.button("Add Farmer"): # runs code only when clicked.
     st.success("Farmer Added Successfully")
 
 
-#----
+
+#----DELETE FARMER
 st.subheader("Delete Farmer")
 
 delete_id = st.number_input(
@@ -75,7 +77,8 @@ if st.button("Delete Farmer"):
     st.warning("Farmer Deleted Successfully")
 
 
-# -----
+
+# -----UPDATE
 st.subheader("Update Farmer")
 
 update_id = st.number_input(
