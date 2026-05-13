@@ -6,10 +6,8 @@ CREATE DATABASE smart_agriculture_db;
 
 USE smart_agriculture_db;
 
--- =========================================
--- TABLE: FARMER
--- =========================================
 
+-- TABLE: FARMER
 CREATE TABLE Farmer (
     farmer_id INT AUTO_INCREMENT PRIMARY KEY,
     farmer_name VARCHAR(100) NOT NULL,
@@ -18,10 +16,8 @@ CREATE TABLE Farmer (
     farmer_address VARCHAR(255)
 );
 
--- =========================================
--- TABLE: FARM
--- =========================================
 
+-- TABLE: FARM
 CREATE TABLE Farm (
     farm_id INT AUTO_INCREMENT PRIMARY KEY,
     farmer_id INT NOT NULL,
@@ -36,9 +32,8 @@ CREATE TABLE Farm (
         ON UPDATE CASCADE
 );
 
--- =========================================
+
 -- TABLE: FIELD
--- =========================================
 
 CREATE TABLE Field (
     field_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -54,9 +49,8 @@ CREATE TABLE Field (
         ON UPDATE CASCADE
 );
 
--- =========================================
+
 -- TABLE: CROP
--- =========================================
 
 CREATE TABLE Crop (
     crop_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,9 +66,8 @@ CREATE TABLE Crop (
         ON UPDATE CASCADE
 );
 
--- =========================================
+
 -- TABLE: SENSOR
--- =========================================
 
 CREATE TABLE Sensor (
     sensor_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -90,9 +83,8 @@ CREATE TABLE Sensor (
         ON UPDATE CASCADE
 );
 
--- =========================================
+
 -- TABLE: SOIL DATA
--- =========================================
 
 CREATE TABLE SoilData (
     soil_data_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -109,9 +101,8 @@ CREATE TABLE SoilData (
         ON UPDATE CASCADE
 );
 
--- =========================================
+
 -- TABLE: IRRIGATION SCHEDULE
--- =========================================
 
 CREATE TABLE IrrigationSchedule (
     schedule_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -127,9 +118,8 @@ CREATE TABLE IrrigationSchedule (
         ON UPDATE CASCADE
 );
 
--- =========================================
+
 -- TABLE: WEATHER RECORD
--- =========================================
 
 CREATE TABLE WeatherRecord (
     weather_id INT AUTO_INCREMENT PRIMARY KEY,
