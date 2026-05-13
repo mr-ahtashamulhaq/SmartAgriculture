@@ -36,21 +36,25 @@ phone = st.text_input("Farmer Phone")
 address = st.text_area("Farmer Address") # multi-line input box
 
 if st.button("Add Farmer"): # runs code only when clicked.
-    
-    #SQL Query
-    query = """ 
-    INSERT INTO Farmer
-    (farmer_name, farmer_email, farmer_phone, farmer_address)
-    VALUES (%s, %s, %s, %s)
-    """
 
-    values = (name, email, phone, address) # Tuple of values
+    if not name or not email:
+        st.error("Name and Email are required")
 
-    cursor.execute(query, values)   #Runs SQL Query
+    else:
+        #SQL Query
+        query = """ 
+        INSERT INTO Farmer
+        (farmer_name, farmer_email, farmer_phone, farmer_address)
+        VALUES (%s, %s, %s, %s)
+        """
 
-    conn.commit()   #save changes permanently
+        values = (name, email, phone, address) # Tuple of values
 
-    st.success("Farmer Added Successfully")
+        cursor.execute(query, values)   #Runs SQL Query
+
+        conn.commit()   #save changes permanently
+
+        st.success("Farmer Added Successfully")
 
 
 
