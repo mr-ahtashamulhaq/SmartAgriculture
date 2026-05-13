@@ -4,8 +4,8 @@ primaryColor = "#1dd3b0"
 
 backgroundColor = "#ffffff"
 
-secondaryBackgroundColor = "#f5f7fa"
+secondaryBackgroundColor = "#f7f9fc"
 
-textColor = "#107641"
+textColor = "#1e293b"
 
-font = "Lexend"
+font = "sans serif"
