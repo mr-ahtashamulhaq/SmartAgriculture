@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from db import create_connection
 
+st.set_page_config( page_title="Smart Agriculture System", page_icon="🌱" )
 
 conn = create_connection()
 cursor = conn.cursor()

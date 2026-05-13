@@ -3,6 +3,8 @@ import pandas as pd
 from db import create_connection
 from datetime import datetime
 
+st.set_page_config( page_title="Smart Agriculture System", page_icon="🌱" )
+
 conn = create_connection()
 cursor = conn.cursor()
 

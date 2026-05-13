@@ -2,6 +2,8 @@ import streamlit as st
 from db import create_connection
 import pandas as pd
 
+st.set_page_config( page_title="Smart Agriculture System", page_icon="🌱" )
+
 st.title("Fields Management")
 
 conn = create_connection()

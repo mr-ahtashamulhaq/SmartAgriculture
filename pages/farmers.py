@@ -2,6 +2,8 @@ import streamlit as st
 from db import create_connection
 import pandas as pd
 
+st.set_page_config( page_title="Smart Agriculture System", page_icon="🌱" )
+
 conn = create_connection() # Create mySQL connection
 cursor = conn.cursor() #cursor execute queries
 st.title("Farmers Management")
