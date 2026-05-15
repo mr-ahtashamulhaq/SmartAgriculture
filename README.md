@@ -267,7 +267,7 @@ The dashboard provides:
 
 # 👨‍💻 Developers
 
-## Ahtasham Ul Haq : [LinkedIn](https://www.linkedin.com/in/mr-ahtasham-ul-haq/)
+# Muhammad Ahtasham Ul Haq : [LinkedIn](https://www.linkedin.com/in/mr-ahtasham-ul-haq/)
 
 
-## Muhammad Faizan : [LinkedIn](https://www.linkedin.com/in/muhammad-faizan-992b86320/)
+# Muhammad Faizan : [LinkedIn](https://www.linkedin.com/in/muhammad-faizan-992b86320/)
