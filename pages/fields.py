@@ -1,168 +1,100 @@
 import streamlit as st
-from db import create_connection
 import pandas as pd
+from db import create_connection
+from styles import inject_styles, render_sidebar, page_header, section_header
 
-st.set_page_config( page_title="Smart Agriculture System", page_icon="🌱" )
+st.set_page_config(page_title="Fields", page_icon="🌱", layout="wide")
+inject_styles()
+render_sidebar()
 
-st.title("Fields Management")
-
-conn = create_connection()
+conn   = create_connection()
 cursor = conn.cursor()
 
-query = """
-SELECT farm_id, farm_name
-FROM Farm
-"""
+page_header("grass", "Fields", "Manage field plots, soil types, and areas within each farm")
 
-cursor.execute(query)
+cursor.execute("SELECT farm_id, farm_name FROM Farm")
+farm_map = {f"{f[0]} – {f[1]}": f[0] for f in cursor.fetchall()}
 
-farms = cursor.fetchall()
-
-# -Create FARM mapping dict -> farmname : farmID
-farm_options = {}
-
-for farm in farms:
-    farm_options[farm[1]] = farm[0]
-
-
-
-# --- VIEW Fields ---
-st.subheader("Field Records")
-
-if st.button("View Fields"):
-
-    view_query = """
-    SELECT Field.field_id, Farm.farm_name, Field.field_name, Field.soil_type, Field.field_area
-    FROM Field
-    JOIN Farm
-    ON Field.farm_id = Farm.farm_id
-    """
-
-    cursor.execute(view_query)
-
-    result = cursor.fetchall()
-
-    df = pd.DataFrame( result, columns=[ "Field ID", "Farm Name", "Field Name", "Soil Type", "Field Area" ] )
-
-    st.dataframe(df)
-
-
-
-# --- ADD Field ---
-st.subheader("Add New Field")
-
-selected_farm = st.selectbox(
-    "Select Farm",
-    options=list(farm_options.keys())
+tab_view, tab_add, tab_update, tab_delete = st.tabs(
+    ["View Records", "Add Field", "Update Field", "Delete Field"]
 )
 
-field_name = st.text_input("Field Name")
+with tab_view:
+    section_header("Field Records")
+    cursor.execute("""
+        SELECT Field.field_id, Farm.farm_name, Field.field_name, Field.soil_type, Field.field_area
+        FROM Field JOIN Farm ON Field.farm_id = Farm.farm_id
+    """)
+    df = pd.DataFrame(cursor.fetchall(), columns=["ID", "Farm", "Field Name", "Soil Type", "Area (ha)"])
+    if not df.empty:
+        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.caption(f"Total: **{len(df)}** fields")
+    else:
+        st.info("No field records found.")
 
-soil_type = st.text_input("Soil Type")
+with tab_add:
+    section_header("Add New Field")
+    with st.form("add_field_form", clear_on_submit=True):
+        c1, c2 = st.columns(2)
+        with c1:
+            selected_farm = st.selectbox("Select Farm *", options=list(farm_map.keys()))
+            field_name    = st.text_input("Field Name *", placeholder="e.g. North Plot A")
+        with c2:
+            soil_type  = st.text_input("Soil Type", placeholder="e.g. Loamy, Clay, Sandy")
+            field_area = st.number_input("Field Area (ha)", min_value=0.0, step=0.5, format="%.2f")
+        if st.form_submit_button("Add Field", use_container_width=True):
+            if not field_name:
+                st.error("Field name is required.")
+            else:
+                cursor.execute(
+                    "INSERT INTO Field (farm_id, field_name, soil_type, field_area) VALUES (%s, %s, %s, %s)",
+                    (farm_map[selected_farm], field_name, soil_type, field_area)
+                )
+                conn.commit()
+                st.success(f"Field **{field_name}** added successfully!")
 
-field_area = st.number_input(
-    "Field Area",
-    min_value=0.0,
-    step=1.0
-)
+with tab_update:
+    section_header("Update Field")
+    cursor.execute("SELECT field_id, field_name FROM Field")
+    fields = cursor.fetchall()
+    if fields:
+        field_map = {f"{f[0]} – {f[1]}": f[0] for f in fields}
+        with st.form("update_field_form"):
+            selected_field = st.selectbox("Select Field to Update", options=list(field_map.keys()))
+            c1, c2 = st.columns(2)
+            with c1:
+                new_farm       = st.selectbox("New Farm", options=list(farm_map.keys()))
+                new_field_name = st.text_input("New Field Name")
+            with c2:
+                new_soil_type  = st.text_input("New Soil Type")
+                new_area       = st.number_input("New Area (ha)", min_value=0.0, step=0.5, format="%.2f")
+            if st.form_submit_button("Update Field", use_container_width=True):
+                cursor.execute("""
+                    UPDATE Field SET farm_id=%s, field_name=%s, soil_type=%s, field_area=%s WHERE field_id=%s
+                """, (farm_map[new_farm], new_field_name, new_soil_type, new_area, field_map[selected_field]))
+                conn.commit()
+                st.success("Field updated successfully!")
+    else:
+        st.info("No fields available to update.")
 
+with tab_delete:
+    section_header("Delete Field")
+    cursor.execute("SELECT field_id, field_name FROM Field")
+    fields = cursor.fetchall()
+    if fields:
+        field_map = {f"{f[0]} – {f[1]}": f[0] for f in fields}
+        with st.form("delete_field_form"):
+            selected_field = st.selectbox("Select Field to Delete", options=list(field_map.keys()))
+            confirmed      = st.checkbox("I confirm I want to delete this field")
+            if st.form_submit_button("Delete Field", use_container_width=True):
+                if not confirmed:
+                    st.warning("Please confirm deletion first.")
+                else:
+                    cursor.execute("DELETE FROM Field WHERE field_id=%s", (field_map[selected_field],))
+                    conn.commit()
+                    st.warning("Field deleted successfully.")
+    else:
+        st.info("No fields available to delete.")
 
-# ---  Insert Field Query
-
-if st.button("Add Field"):
-
-    farm_id = farm_options[selected_farm]
-
-    insert_query = """
-    INSERT INTO Field
-    (farm_id, field_name, soil_type, field_area)
-    VALUES (%s, %s, %s, %s)
-    """
-
-    values = ( farm_id, field_name, soil_type, field_area )
-
-    cursor.execute(insert_query, values)
-
-    conn.commit()
-
-    st.success("Field Added Successfully")
-
-
-
-# ---DELETE Field ---
-st.subheader("Delete Field")
-
-delete_id = st.number_input(
-    "Enter Field ID",
-    min_value=1,
-    step=1,
-    key="delete_field"
-)
-
-if st.button("Delete Field"):
-
-    delete_query = """
-    DELETE FROM Field
-    WHERE field_id = %s
-    """
-
-    cursor.execute(delete_query, (delete_id,))
-
-    conn.commit()
-
-    st.warning("Field Deleted Successfully")
-
-
-# --- UPDATE Existing Field ---
-st.subheader("Update Field")
-
-update_id = st.number_input(
-    "Field ID to Update",
-    min_value=1,
-    step=1,
-    key="update_field"
-)
-
-new_field_name = st.text_input(
-    "New Field Name"
-)
-
-new_soil_type = st.text_input(
-    "New Soil Type"
-)
-
-new_field_area = st.number_input(
-    "New Field Area",
-    min_value=0.0,
-    step=1.0,
-    key="new_field_area"
-)
-
-new_farm = st.selectbox(
-    "Select New Farm",
-    options=list(farm_options.keys()),
-    key="new_farm"
-)
-
-if st.button("Update Field"):
-
-    farm_id = farm_options[new_farm]
-
-    update_query = """
-    UPDATE Field
-    SET
-        farm_id = %s,
-        field_name = %s,
-        soil_type = %s,
-        field_area = %s
-    WHERE field_id = %s
-    """
-
-    values = ( farm_id, new_field_name, new_soil_type, new_field_area, update_id )
-
-    cursor.execute(update_query, values)
-
-    conn.commit()
-
-    st.success("Field Updated Successfully")
-
+cursor.close()
+conn.close()
