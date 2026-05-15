@@ -14,6 +14,7 @@ Monitor farms, crops, soil conditions, irrigation schedules, weather records, an
 </div>
 
 ---
+[![Live Demo](https://img.shields.io/badge/Live-Demo-1dd3b0?style=for-the-badge&logo=streamlit&logoColor=white)](https://smart-agriculture-monitoring-system.streamlit.app)
 
 # 📌 Project Overview
 
