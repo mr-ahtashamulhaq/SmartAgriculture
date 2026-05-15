@@ -1,8 +1,15 @@
 import mysql.connector
+import streamlit as st
+
 
 def create_connection():
-    connection = mysql.connector.connect(host = "localhost", user = "root", password = "root" , database = "smart_agriculture_db")
+
+    connection = mysql.connector.connect(
+        host=st.secrets["DB_HOST"],
+        port=st.secrets["DB_PORT"],
+        user=st.secrets["DB_USER"],
+        password=st.secrets["DB_PASSWORD"],
+        database=st.secrets["DB_NAME"]
+    )
 
     return connection
-
-

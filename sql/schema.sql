@@ -1,12 +1,3 @@
--- SMART AGRICULTURE MONITORING SYSTEM
--- DATABASE SCHEMA
--- -----------------------------------------
-
-CREATE DATABASE smart_agriculture_db;
-
-USE smart_agriculture_db;
-
-
 -- TABLE: FARMER
 CREATE TABLE Farmer (
     farmer_id INT AUTO_INCREMENT PRIMARY KEY,
